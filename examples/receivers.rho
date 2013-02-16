@@ -28,7 +28,7 @@ continuation and invoke it later on. For example:
 @invocation-count = 0
 class.def.get-continuation:
   say 'got a continuation!'
-  return cc
+  return &return
 
 @continuation = get-continuation
 
