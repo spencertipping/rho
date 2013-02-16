@@ -1,0 +1,11 @@
+#!/usr/bin/env rho
+Rho isn't strictly lexical or dynamic with its scoping; different things behave
+differently. One example of this is messages, which are mostly lexically
+scoped. For instance:
+
+def.foo 5
+[1, 2, 3].each x: say x + foo   # prints 6 \n 7 \n 8
+
+Here, the 'foo' message in the block is forwarded to the innermost lexical
+frame that defines it. This logic is handled by the StackFrame object, which
+acts as the initial receiver of the message.

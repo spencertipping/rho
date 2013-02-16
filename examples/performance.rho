@@ -1,0 +1,77 @@
+#!/usr/bin/env rho
+Rho is not a particularly fast language by default, mostly due to the dynamic
+features that it provides. However, you can easily write nearly-optimal code by
+using untyped variables and by accessing the runtime compiler directly.
+
+Let's say, for instance, that you have a list of numbers and you want to sum
+them quickly. Using a regular array is highly suboptimal:
+
+require 'rho/profile'
+
+array.def.sum: fold -into 0 -with :+
+
+numbers = []
+100000.times numbers.&<<
+profile: numbers.sum
+
+You are much better off using an untyped numeric array:
+
+require 'rho/untyped'
+require 'rho/compiler'
+
+array-of-numbers = array.untyped(compiler.primitive-int64)
+untyped-numbers  = [].become! array-of-numbers
+
+100000.times untyped-numbers.&<<
+profile: say "total = #{numbers.sum}"
+
+This is much faster because it performs three optimizations. First, it removes
+all vtables from the stored objects, since we have asserted the type of each
+object in the array. Second, it changes the allocation strategy from
+by-reference to by-value. Third, it recompiles each instance method with a
+constant constraint for the vtable of each element.
+
+Let's suppose you need even more performance. By this point the compiler has
+inlined method invocations from the number class, but it's still checking for
+overflow and such. Maybe you want to remove every single superfluous
+instruction and compile a processor-specialized tight loop. Rho lets you do
+this by talking directly to the macro assembler:
+
+require 'rho/compiler'
+
+array-of-numbers.def.fast-sum compiler.proc:
+  no-formals
+  assembly:
+    rho-call-header   # make this compatible with Rho calling convention
+
+    We have two choices here. We can ask Rho to allocate registers, or we can
+    allocate them ourselves. For this example, let's do the latter.
+    movq @size, :rcx
+    rho-call -fn       number.&unwrap-int64
+             -receiver :rcx
+             -into     :rcx
+
+    movq @data, :rdx                          # load instance variable
+    xorq :rax, :rax                           # sum so far
+
+    testq :rcx, :rcx                          # handle trivial case
+    jz :done
+
+    decq :rcx
+
+    label :next
+    addq [:rdx + :rcx * 8], :rax              # add element
+    loop :next                                # --%rcx, jump :next
+
+    Wrap the result into a normal Rho number.
+    label :done
+    rho-call -fn      number.&wrap-int64
+             -formals :rax
+             -into    :rax
+
+    rho-return :rax
+
+Now we can invoke this function using normal Rho syntax:
+profile: numbers.fast-sum
+
+Compilation happens the first time fast-sum is called.
