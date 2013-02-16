@@ -51,17 +51,16 @@ array-of-numbers.def.fast-sum compiler.proc:
              -receiver :rcx
              -into     :rcx
 
-    movq @data, :rdx                          # load instance variable
-    xorq :rax, :rax                           # sum so far
+    movq @data, :rdx                    # load instance variable
+    xorq :rax, :rax                     # sum so far
 
-    testq :rcx, :rcx                          # handle trivial case
-    jz :done
-
-    decq :rcx
+    testq :rcx, :rcx                    # handle trivial case
+    jz :done                            # no loop if no elements
+    decq :rcx                           # point to last element
 
     label :next
-    addq [:rdx + :rcx * 8], :rax              # add element
-    loop :next                                # --%rcx, jump :next
+    addq [:rdx + :rcx * 8], :rax        # add element
+    loop :next                          # --%rcx, jump :next
 
     Wrap the result into a normal Rho number.
     label :done
