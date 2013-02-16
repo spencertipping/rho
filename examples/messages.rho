@@ -24,18 +24,6 @@ Perhaps surprisingly, class-changing is not an expensive operation at all.
 Classes are defined by their vtables, which can be changed with just a few
 machine instructions and no memory allocation.
 
-We can also create scope-local methods for things. This allows you to
-monkey-patch classes without polluting the global scope. For example:
-
-our-array = array.subclass:
-  def.count: size
-
-xs.each
-  TODO: rethink syntax for this, and also consider how it would need to be
-  implemented.
-  rebind.array -to our-array -in x, xi:
-    say "#{x} at index #{xi} of #{count} total"
-
 Ok, now let's write our own message handler. We've done this with def above,
 but we didn't specify any formals. Let's write a more complex method with some
 formal parameters.
