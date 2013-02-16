@@ -3,9 +3,41 @@ Rho isn't strictly lexical or dynamic with its scoping; different things behave
 differently. One example of this is messages, which are mostly lexically
 scoped. For instance:
 
-def.foo 5
+foo = 5
 [1, 2, 3].each x: say x + foo   # prints 6 \n 7 \n 8
 
 Here, the 'foo' message in the block is forwarded to the innermost lexical
 frame that defines it. This logic is handled by the StackFrame object, which
 acts as the initial receiver of the message.
+
+These internal workings impact the behavior of constructs like 'return'; for
+instance:
+
+[1, 2, 3].fold 0, (x, y: return x + y)
+
+Had we written Ruby's [1, 2, 3].inject(0) {|x, y| return x + y}, the 'return'
+would have caused the enclosing stack frame to return. However, in Rho,
+'return' is a message to the current stack frame rather than a language
+keyword. Stack frames don't forward 'return' anywhere; instead, the innermost
+one sends a value to its return continuation.
+
+Which brings up another point: continuations. Rho unifies the stack and heap
+for allocation purposes, which means that you can return the current
+continuation and invoke it later on. For example:
+
+@invocation-count = 0
+class.def.get-continuation:
+  say 'got a continuation!'
+  return cc
+
+@continuation = get-continuation
+
+Here, both 'return' and 'cc' are messages handled by the stack frame. Notice
+that this continuation isn't as granular as the ones in Scheme; this is
+intentional. We can now invoke the continuation:
+
+@invocation-count.inc!
+say 'invoking the continuation!'
+@continuation.invoke @continuation unless @invocation-count > 10
+
+say 'saved by the invocation counter!'
