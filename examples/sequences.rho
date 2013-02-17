@@ -37,7 +37,7 @@ twice = infinite(0).map x : 2 * x
 twice.take 2                    # [0, 2]
 twice.each &say                 # says each element as it is resolved
 
-t = timeout.new 5.seconds
+t = timeout.in 5.seconds
 twice.force-until!: t.expired?  # force elements for a few seconds
 twice.available                 # the number of elements already forced
 twice.size                      # interval: twice.available, ∞

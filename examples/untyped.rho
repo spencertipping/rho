@@ -1,0 +1,35 @@
+#!/usr/bin/env rho
+Rho lets you declare a variable as "untyped", in which case it must be inlined
+into the storage of another class. For example:
+require 'rho/compiler'
+
+interval = object.subclass:
+  field :lower -untyped compiler.primitive-double
+  field :upper -untyped compiler.primitive-double
+  constructor-for :lower, :upper
+
+  def.range: @upper - @lower
+
+Clearly something interesting is happening because we can define 'range'
+without re-boxing these untyped primitives. This is made possible by type
+tracking, or thread-local runtime type inference over untyped data. For
+example:
+i = interval.new 3.primitive-double, 4.primitive-double
+x = i.lower
+
+At this point, x is an untyped primitive local. But we're still safe
+manipulating it as if it were boxed because the thread is keeping track of its
+vtable pointer for us.
+x += 5
+say "the primitive x is #{x}"   # tos method still works
+
+You can disable type tracking by sending a message to the current VM.
+require 'rho/vm'
+vm.no-type-tracking!!           # very dangerous!
+
+Doing this gets rid of any existing type tracking maps, which will then cause
+the VM to assume that all untyped values are manipulated with untyped
+primitives, which occur only in methods compiled for the purpose.
+
+The no-type-tracking!! method is suffixed with two bangs to indicate
+segfault-level peril if misused.

@@ -27,9 +27,6 @@ syn keyword rhoDynamicScope     return become! do raise call/cc
 syn keyword rhoOOP              class subclass
 
 syn keyword rhoModifier         when unless while until for and where rescue
-syn cluster rhoActiveWords      add=rhoKernel,rhoDynamicScope,rhoModifier,rhoOOP
-
-syn match   rhoMethod           /\.\w\+/ contains=@rhoActiveWords
 
 syn region  rhoRegexpSyntax     matchgroup=rhoRegexpDelimiter start=/\/\S\@=/ end=/\/\w*/ skip=/\\./ contained
 syn region  rhoRegexpGroup      matchgroup=rhoRegexpDelimiter start=/(/ end=/)/ skip=/\\./ contained
@@ -45,16 +42,20 @@ syn match   rhoFormal           /\k\+\s*/ contained
 syn match   rhoFormalSeparator  /:/       contained
 syn match   rhoBlockStart       /\(\<\k\+\|,\s*\k\+\|\s*=\s*\S\+\)\+ :\(\s\|$\)/ contains=rhoFormal,rhoFormalSeparator
 
-syn match   rhoDefMethod        /\.\(un\)\?def\./ nextgroup=rhoMethodName
-syn match   rhoDefinition       /\<\(un\)\?def\./ nextgroup=rhoMethodName
-syn match   rhoAssignment       /\k\+\s\+=\s\+/   contains=rhoLHS
+syn match   rhoDefMethod        /\.def\./ nextgroup=rhoMethodName
+syn match   rhoDefinition       /\<def\./ nextgroup=rhoMethodName
+syn match   rhoAssignment       /\k\+\s\+=\s\+/ contains=rhoLHS
 syn match   rhoLHS              /\k\+/ contained
 syn match   rhoMethodName       /\k\+/ contained
 syn match   rhoMethodName       /#\k\+/
 
+syn match   rhoVeryDangerous    /\<\k\+!!/
+
 syn match   rhoQuotedMethod     /\<&\k\+/
 
-syn cluster rhoSpecialMethods   add=rhoDefinition,rhoAssignment,rhoQuotedMethod
+syn cluster rhoSpecialMethods   add=rhoDefinition,rhoAssignment,rhoQuotedMethod,rhoVeryDangerous
+syn cluster rhoActiveWords      add=rhoKernel,rhoDynamicScope,rhoModifier,rhoOOP
+syn match   rhoMethod           /\.\w\+/ contains=@rhoActiveWords,@rhoSpecialMethods
 
 syn match   rhoLineComment      /\(\s\|^\)# .*/
 syn region  rhoImplicitComment  start=/^\s*[A-Z]/ end=/[!?.:]\s*$/
@@ -120,3 +121,4 @@ hi def link rhoQuotedWord       String
 
 hi def link rhoDelimiter        Special
 hi def link rhoQuotePercent     Special
+hi def link rhoVeryDangerous    Todo
