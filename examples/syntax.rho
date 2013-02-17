@@ -26,7 +26,7 @@ There are no local variables in Rho. The presence of locals is simulated by the
 stack frame class, which responds to local variable get/sets.
 
 Functions are constructed by using the : operator. For example:
-f = x : x + 1                   # f 1 = f.call 1 = 2
+f = x : x + 1                   # #f 1 = f.call 1 = 2
 [1, 2].each x : say x           # prints 1 then 2
 [1, 2].each(x : say x)          # same thing
 
@@ -35,19 +35,23 @@ instance:
 f = : 1                         # f.call = 1, but lazily
 (1 == 2).iftrue: say 'uh oh'
 
-class:
-  def.foo: 'the string foo'
+Define a frame-local message from an anonymous function.
+#foo = : 'the string foo'
+say foo
+
+You can also use # notation to call an anonymous function. A #x message to the
+stack frame is tail-forwarded to x.call.
+greet = name : say "hi #{name}!"
+#greet 'bob'
 
 Notice that whenever the nullary function : is preceded by a word, there is no
 separating whitespace. This is important! Similarly, it's important to have
 whitespace after any formal parameters. Otherwise the following would be
 ambiguous:
-
 foo: bar                        # should this be (foo): bar, or (foo : bar)?
 
 Literals include strings, symbols, regexps, numbers, arrays, quoted-blocks,
 quoted-words, and anonymous classes, which are really hashes. For example:
-
 :foo                            # symbol
 -foo                            # symbol (flag), but not usable as a value
 "foo"                           # string

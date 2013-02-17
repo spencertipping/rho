@@ -23,8 +23,7 @@ array-of-numbers = array.untyped compiler.primitive-int64
 untyped-numbers  = [].become! array-of-numbers
 
 100000.times untyped-numbers.&<<
-profile:
-  say "total = #{numbers.sum}"
+profile: say "total = #{numbers.sum}"
 
 This is much faster because it performs three optimizations. First, it removes
 all vtables from the stored objects, since we have asserted the type of each
@@ -65,7 +64,6 @@ array-of-numbers.def.fast-sum compiler.proc:
     rho-return :rax
 
 Now we can invoke this function using normal Rho syntax:
-profile:
-  numbers.fast-sum
+profile: numbers.fast-sum
 
 Compilation happens the first time fast-sum is called.

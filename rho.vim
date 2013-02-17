@@ -21,7 +21,7 @@ syn region  rhoString           matchgroup=rhoStringDelimiter start=/\z(["']\)/ 
 syn region  rhoEscape           matchgroup=rhoStringDelimiter start=/#{/ end=/}/ contains=TOP contained
 
 syn keyword rhoKernel           require include inherit rebind
-syn keyword rhoDynamicScope     return become! do raise
+syn keyword rhoDynamicScope     return become! do raise call/cc
 syn keyword rhoOOP              class subclass
 
 syn keyword rhoModifier         when unless while until for and where rescue
@@ -48,11 +48,11 @@ syn match   rhoDefinition       /\<\(un\)\?def\./ nextgroup=rhoMethodName
 syn match   rhoAssignment       /\k\+\s\+=\s\+/   contains=rhoLHS
 syn match   rhoLHS              /\k\+/ contained
 syn match   rhoMethodName       /\k\+/ contained
-
-syn cluster rhoSpecialMethods   add=rhoDefinition,rhoAssignment
-syn match   rhoImplicitMethod   /^\s*\k\+\(\.\s*\k\+\)*/ contains=@rhoActiveWords,@rhoSpecialMethods
+syn match   rhoMethodName       /#\k\+/
 
 syn match   rhoQuotedMethod     /\<&\k\+/
+
+syn cluster rhoSpecialMethods   add=rhoDefinition,rhoAssignment,rhoQuotedMethod
 
 syn match   rhoLineComment      /\(\s\|^\)# .*/
 syn region  rhoImplicitComment  start=/^\s*[A-Z]/ end=/[!?.:]\s*$/

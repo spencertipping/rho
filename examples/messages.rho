@@ -28,8 +28,7 @@ Ok, now let's write our own message handler. We've done this with def above,
 but we didn't specify any formals. Let's write a more complex method with some
 formal parameters.
 
-class:
-  def.stderr text : say -stderr text
+#stderr = text : say -stderr text
 
 stderr "this goes to stderr"
 stderr -text "this goes to stderr"
@@ -44,13 +43,12 @@ do:
 You can specify parameters with default values if you want to take multiple
 options. For example:
 
-class:
-  undef.stderr
-  def.stderr text = nil, color-code = 0 :
-    say pieces.join
-    where pieces = ["\033[1;#{color-code}m" when color-code != 0,
-                    text // 'nothing to say',
-                    "\033[0;0m" when color-code != 0]
+class.undef.stderr
+#stderr = text = nil, color-code = 0 :
+  say pieces.join
+  where pieces = ["\033[1;#{color-code}m" when color-code != 0,
+                  text // 'nothing to say',
+                  "\033[0;0m" when color-code != 0]
 
 Now we can invoke stderr using any combination of arguments.
 

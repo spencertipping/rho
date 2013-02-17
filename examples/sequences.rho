@@ -1,0 +1,43 @@
+#!/usr/bin/env rho
+Rho has two main kinds of sequences, lazy and un-lazy. All sequences know what
+kind they are, so you can ask, for instance:
+[1, 2, 3].lazy?                 # nil
+
+A sequence is defined to be lazy iff either (1) it contains elements whose
+values have yet to be evaluated, or (2) its size is not yet known. We can
+construct a lazy sequence using the lazy method.
+class.def.infinite n : cons n -lazy: infinite(n + 1)
+
+the-seq = infinite 0
+the-seq.lazy?                   # the-seq (a proxy for true)
+the-seq.take(20).lazy?          # nil
+
+Sequences are convertible to/from hashes by using a couple of methods:
+{foo: 'bar', bif: 'baz'}.toa    # [[:foo, 'bar'], [:bif, 'baz']]
+{}.class == hash                # hash (proxy for true)
+h = {foo: 'bar', bif: 'baz'}
+h.keys                          # [:foo, :bar]   (in any order)
+h.values                        # ['bar', 'baz'] (in any order)
+
+%w(foo bar).index-by &:tosym    # {foo: 'foo', bar: 'bar'}
+
+These methods apply eagerly here because the underlying sequence is eager. But
+it's easy enough to have them apply lazily instead. We just build a lazy view
+of the underlying sequence.
+lazy-words = %(foo bar bif).lazy
+lazy-hash  = lazy-words.index-by &:to-sym
+
+lazy-hash.keys                  # a lazy sequence
+lazy-hash.values                # another lazy sequence
+lazy-hash[:foo]                 # forces elements until :foo is found
+
+Lazy sequences support the same methods that strict sequences do, but defer
+evaluation accordingly.
+twice = infinite(0).map x : 2 * x
+twice.take 2                    # [0, 2]
+twice.each &say                 # says each element as it is resolved
+
+t = timeout.new 5.seconds
+twice.force-until!: t.expired?  # force elements for a few seconds
+twice.available                 # the number of elements already forced
+twice.size                      # interval: twice.available, ∞
