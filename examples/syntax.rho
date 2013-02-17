@@ -1,0 +1,58 @@
+#!/usr/bin/env rho
+Rho contains two main elements of syntax, message-sends and lambda
+construction. Beyond this it has a few different literal forms and support for
+two different kinds of comments.
+
+A message looks like any of these forms:
+foo
+foo bar
+foo -bar bif
+foo bar -bif baz
+foo -bar bif -baz bok
+foo bar, bif
+
+require 'some/file'             # this is also a message send
+foo.bar                         # explicit receiver
+foo.bar bif
+foo.bar bif, baz
+foo.bar bif -baz bok
+foo.bar -bif baz
+
+There are no local variables in Rho. The presence of locals is simulated by the
+stack frame class, which responds to local variable get/sets.
+
+Functions are constructed by using the : operator. For example:
+f = x : x + 1                   # f 1 = f.call 1 = 2
+[1, 2].each x : say x           # prints 1 then 2
+[1, 2].each(x : say x)          # same thing
+
+You can also construct anonymous functions that accept no arguments. For
+instance:
+f = : 1                         # f.call = 1, but lazily
+(1 == 2).iftrue: say 'uh oh'
+
+class:
+  def.foo: 'the string foo'
+
+Notice that whenever the nullary function : is preceded by a word, there is no
+separating whitespace. This is important! Similarly, it's important to have
+whitespace after any formal parameters. Otherwise the following would be
+ambiguous:
+
+foo: bar                        # should this be (foo): bar, or (foo : bar)?
+
+Literals include strings, symbols, regexps, numbers, arrays, quoted-blocks,
+quoted-words, and anonymous classes, which are really hashes. For example:
+
+:foo                            # symbol
+-foo                            # symbol (flag), but not usable as a value
+"foo"                           # string
+'foo'                           # string
+3.0                             # number
+%foo                            # quoted word
+%w(foo bar bif)                 # quoted-block
+[1, 2]                          # array
+{foo: 1, bar: 2}                # anonymous class/hash
+
+Rho has no constants. All things that would normally be constants are instead
+defined as dynamic variables on the outermost frame of the call stack.

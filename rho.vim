@@ -15,7 +15,7 @@ if !exists("main_syntax")
 endif
 
 syn case match
-set iskeyword=33,35-38,42-43,45,47-57,60-63,65-90,94-122,124,126
+set iskeyword=33,35-38,42-43,45,47-57,60-63,65-90,94-122,124,126,128-255
 
 syn region  rhoString           matchgroup=rhoStringDelimiter start=/\z(["']\)/ end=/\z1/ skip=/\\./ keepend contains=rhoEscape
 syn region  rhoEscape           matchgroup=rhoStringDelimiter start=/#{/ end=/}/ contains=TOP contained
@@ -41,12 +41,13 @@ syn match   rhoInstance         /@\+\k\+/
 
 syn match   rhoFormal           /\k\+\s*/ contained
 syn match   rhoFormalSeparator  /:/       contained
-syn match   rhoBlockStart       /\(\<\k\+\|,\s*\k\+\|\s*=\s*\S\+\)\+:/ contains=rhoFormal,rhoFormalSeparator
+syn match   rhoBlockStart       /\(\<\k\+\|,\s*\k\+\|\s*=\s*\S\+\)\+ :/ contains=rhoFormal,rhoFormalSeparator
 
-syn match   rhoDefMethod        /\.\(un\)\?def\./ nextgroup=rhoLHS
-syn match   rhoDefinition       /\<\(un\)\?def\./ nextgroup=rhoLHS
-syn match   rhoAssignment       /\k\+\s*=\s\+/    contains=rhoLHS
+syn match   rhoDefMethod        /\.\(un\)\?def\./ nextgroup=rhoMethodName
+syn match   rhoDefinition       /\<\(un\)\?def\./ nextgroup=rhoMethodName
+syn match   rhoAssignment       /\k\+\s\+=\s\+/   contains=rhoLHS
 syn match   rhoLHS              /\k\+/ contained
+syn match   rhoMethodName       /\k\+/ contained
 
 syn cluster rhoSpecialMethods   add=rhoDefinition,rhoAssignment
 syn match   rhoImplicitMethod   /^\s*\k\+\(\.\s*\k\+\)*/ contains=@rhoActiveWords,@rhoSpecialMethods
@@ -68,6 +69,9 @@ syn match   rhoHex              /^\s*0x[0-9a-fA-F]\+/
 syn match   rhoOctal            /\<0[0-7]\+/
 syn match   rhoOctal            /^\s*0[0-7]\+/
 
+syn match   rhoQuotedWord       /\<%\k\+/ contains=rhoQuotePercent
+syn match   rhoQuotePercent     /%/ contained
+
 syn region  rhoQuotedParen      matchgroup=rhoDelimiter start=/%\w*(/  end=/)/
 syn region  rhoQuotedBracket    matchgroup=rhoDelimiter start=/%\w*\[/ end=/]/
 syn region  rhoQuotedBrace      matchgroup=rhoDelimiter start=/%\w*{/  end=/}/
@@ -83,6 +87,7 @@ hi def link rhoOctal            Number
 
 hi def link rhoQuotedMethod     Keyword
 
+hi def link rhoNullaryBlock     Keyword
 hi def link rhoFormal           Identifier
 
 hi def link rhoSymbol           String
@@ -92,6 +97,7 @@ hi def link rhoKernelInvocation Type
 
 hi def link rhoDefinition       Special
 hi def link rhoDefMethod        Special
+hi def link rhoMethodName       Type
 hi def link rhoLHS              Identifier
 
 hi def link rhoRegexp           String
@@ -104,3 +110,11 @@ hi def link rhoModifier         Keyword
 
 hi def link rhoInstance         Type
 hi def link rhoOOP              Type
+
+hi def link rhoQuotedParen      String
+hi def link rhoQuotedBracket    String
+hi def link rhoQuotedBrace      String
+hi def link rhoQuotedWord       String
+
+hi def link rhoDelimiter        Special
+hi def link rhoQuotePercent     Special

@@ -1,0 +1,17 @@
+#!/usr/bin/env rho
+Rho provides an expressive OS interface that makes it easy to run external
+programs.
+
+require 'rho/shell'
+
+Execute commands and grab stdout of the resulting pipeline. No data is read
+from the pipe until we force it with a message like each-line.
+first-field = $: temp = mktemp rho-shell-example.XXXXXX
+                 ls $HOME > $temp
+                 sort temp | cut -f 1
+
+Lazily pull lines and print them to the screen.
+@line-count = 0
+first-field.each-line l :
+  @line-count.inc!
+  say "#{@line-count}: #{l}"

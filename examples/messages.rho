@@ -16,9 +16,9 @@ It's inconvenient to promote arrays like this. Fortunately, we can avoid it by
 defining a missing-message handler on the array class. We can specify that we
 want messages to be forwarded to a different receiver by using
 missing-message-receiver.
-array.missing-message-receiver name, context:
+array.missing-message-receiver name, context :
   become! number-array when number-array.defines? name &&
-                            every? x: x.isa? number
+                            every? x : x.isa? number
 
 Perhaps surprisingly, class-changing is not an expensive operation at all.
 Classes are defined by their vtables, which can be changed with just a few
@@ -29,7 +29,7 @@ but we didn't specify any formals. Let's write a more complex method with some
 formal parameters.
 
 class:
-  def.stderr text: say -stderr text
+  def.stderr text : say -stderr text
 
 stderr "this goes to stderr"
 stderr -text "this goes to stderr"
@@ -39,14 +39,14 @@ you specify a name that isn't handled. For example:
 
 do:
   stderr -unsupported "this won't get printed"
-  rescue e: say "caught exception: #{e}"
+  rescue e : say "caught exception: #{e}"
 
 You can specify parameters with default values if you want to take multiple
 options. For example:
 
 class:
   undef.stderr
-  def.stderr text = nil, color-code = 0:
+  def.stderr text = nil, color-code = 0 :
     say pieces.join
     where pieces = ["\033[1;#{color-code}m" when color-code != 0,
                     text // 'nothing to say',

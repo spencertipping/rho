@@ -4,7 +4,7 @@ differently. One example of this is messages, which are mostly lexically
 scoped. For instance:
 
 foo = 5
-[1, 2, 3].each x: say x + foo   # prints 6 \n 7 \n 8
+[1, 2, 3].each x : say x + foo   # prints 6 \n 7 \n 8
 
 Here, the 'foo' message in the block is forwarded to the innermost lexical
 frame that defines it. This logic is handled by the StackFrame object, which
@@ -13,7 +13,7 @@ acts as the initial receiver of the message.
 These internal workings impact the behavior of constructs like 'return'; for
 instance:
 
-[1, 2, 3].fold 0, (x, y: return x + y)
+[1, 2, 3].fold 0, (x, y : return x + y)
 
 Had we written Ruby's [1, 2, 3].inject(0) {|x, y| return x + y}, the 'return'
 would have caused the enclosing stack frame to return. However, in Rho,
