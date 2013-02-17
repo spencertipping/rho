@@ -44,6 +44,13 @@ stack frame is tail-forwarded to x.call.
 greet = name : say "hi #{name}!"
 #greet 'bob'
 
+Another way to define functions (but not the same):
+class.def.foo: 'the string foo'
+
+You shouldn't do this unless you really want another method on whichever
+metaclass defines the current object's class, and you almost certainly don't
+want this.
+
 Notice that whenever the nullary function : is preceded by a word, there is no
 separating whitespace. This is important! Similarly, it's important to have
 whitespace after any formal parameters. Otherwise the following would be

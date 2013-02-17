@@ -6,7 +6,7 @@ kind they are, so you can ask, for instance:
 A sequence is defined to be lazy iff either (1) it contains elements whose
 values have yet to be evaluated, or (2) its size is not yet known. We can
 construct a lazy sequence using the lazy method.
-class.def.infinite n : cons n -lazy: infinite(n + 1)
+#infinite = n : cons n -lazy: infinite(n + 1)
 
 the-seq = infinite 0
 the-seq.lazy?                   # the-seq (a proxy for true)

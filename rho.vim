@@ -14,6 +14,8 @@ if !exists("main_syntax")
   let main_syntax = "rho"
 endif
 
+setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+
 syn case match
 set iskeyword=33,35-38,42-43,45,47-57,60-63,65-90,94-122,124,126,128-255
 
@@ -41,7 +43,7 @@ syn match   rhoInstance         /@\+\k\+/
 
 syn match   rhoFormal           /\k\+\s*/ contained
 syn match   rhoFormalSeparator  /:/       contained
-syn match   rhoBlockStart       /\(\<\k\+\|,\s*\k\+\|\s*=\s*\S\+\)\+ :/ contains=rhoFormal,rhoFormalSeparator
+syn match   rhoBlockStart       /\(\<\k\+\|,\s*\k\+\|\s*=\s*\S\+\)\+ :\(\s\|$\)/ contains=rhoFormal,rhoFormalSeparator
 
 syn match   rhoDefMethod        /\.\(un\)\?def\./ nextgroup=rhoMethodName
 syn match   rhoDefinition       /\<\(un\)\?def\./ nextgroup=rhoMethodName
