@@ -1,7 +1,6 @@
 #!/usr/bin/env rho
 
 Start a web server to say hello to people.
-require 'rho/server'
 require 'rho/http'
 
 The 'reply' message is understood by the stack frame created for the block.
