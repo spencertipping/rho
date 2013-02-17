@@ -19,11 +19,11 @@ You are much better off using an untyped numeric array:
 require 'rho/untyped'
 require 'rho/compiler'
 
-array-of-numbers = array.untyped(compiler.primitive-int64)
+array-of-numbers = array.untyped compiler.primitive-int64
 untyped-numbers  = [].become! array-of-numbers
 
 100000.times untyped-numbers.&<<
-profile::
+profile:
   say "total = #{numbers.sum}"
 
 This is much faster because it performs three optimizations. First, it removes
@@ -48,11 +48,7 @@ array-of-numbers.def.fast-sum compiler.proc:
     We have two choices here. We can ask Rho to allocate registers, or we can
     allocate them ourselves. For this example, let's do the latter.
     movq @size, :rcx
-    rho-call -fn       number.&unwrap-int64
-             -receiver :rcx
-             -into     :rcx
-
-    movq @data, :rdx                    # load instance variable
+    movq @xs, :rdx                      # load instance variable
     xorq :rax, :rax                     # sum so far
 
     testq :rcx, :rcx                    # handle trivial case
@@ -65,10 +61,7 @@ array-of-numbers.def.fast-sum compiler.proc:
 
     Wrap the result into a normal Rho number.
     label :done
-    rho-call -fn      number.&wrap-int64
-             -formals :rax
-             -into    :rax
-
+    rho-box-int64 :rax
     rho-return :rax
 
 Now we can invoke this function using normal Rho syntax:

@@ -10,8 +10,24 @@ first-field = $: temp = mktemp rho-shell-example.XXXXXX
                  ls $HOME > $temp
                  sort temp | cut -f 1
 
-Lazily pull lines and print them to the screen.
-@line-count = 0
-first-field.each-line l :
-  @line-count.inc!
-  say "#{@line-count}: #{l}"
+Set up a consumer shell process.
+consumer = $: gzip > 'result.gz'
+
+Now start piping lines from one end to the other. Notice that we're only moving
+data between stdout on one end and stdin on the other. If the second process
+fills its stderr buffer, then it will block and nothing more will happen. You
+can fix this by redirecting stdout to a consume-everything buffer:
+consumer.sink! :stderr
+
+Similarly, we can send an automatic EOF to the first process if it tries to
+read anything:
+first-field.plug! :stdin
+
+At this point we can safely start moving data between the two processes.
+line-count = 0
+first-field.stdout.lines.each l :
+  consumer.stdin << "#{line-count.inc!}: #{l}"
+
+We could also simply forward one to the other:
+pipe = first-field.connect-to consumer
+pipe = $: first-field | consumer

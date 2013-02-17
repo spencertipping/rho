@@ -10,6 +10,10 @@ foo -bar bif
 foo bar -bif baz
 foo -bar bif -baz bok
 foo bar, bif
+foo bar -bif
+foo bar
+    -bif baz
+foo -bar -bif
 
 require 'some/file'             # this is also a message send
 foo.bar                         # explicit receiver

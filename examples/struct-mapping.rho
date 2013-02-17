@@ -1,0 +1,20 @@
+#!/usr/bin/env rho
+Rho's class library lets you specify the memory layout of an instance, modulo
+the vtable pointer which is always at position 0. This mechanism can be useful
+when interfacing with C code.
+
+require 'rho/struct'
+
+vector-2d = struct.new:
+  primitive-double :x -inline           # inline allocation
+  primitive-double :y -inline           # (no pointer, just like C structs)
+
+vector-2d:
+  def.+             rhs : vector-2d.new @x + rhs.x, @y + rhs.y
+  def.-             rhs : vector-2d.new @x - rhs.x, @y - rhs.y
+  def.distance-from rhs : ((@x - rhs.x).² + (@y - rhs.y).²).sqrt
+  def.·             rhs : @x * rhs.x + @y * rhs.y
+
+say vector-2d.size              # 24 (bytes per struct)
+say vector-2d.offset-of :x      # 8
+say vector-2d.offset-of :y      # 16
