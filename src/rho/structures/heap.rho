@@ -1,0 +1,34 @@
+Rho standard library: min/max heap data structure
+Copyright (C) 2013, Spencer Tipping; all rights reserved
+Licensed under the terms of the MIT source code license.
+
+require 'rho/structures/array'
+
+heap = object.subclass:
+  config.<
+  invariant.xs: array.new
+  intrinsic.lazy? nil
+
+  def.<< x : heapify-up (xs << x).size - 1
+
+  def.root: xs.first
+  def.pop:  xs.first.tap: xs.first = xs.pop unless xs.empty?
+                          promote-child-of 0
+
+  #parent = i : i >> 1
+  #left   = i : i << 1
+  #right  = i : 1 + left i
+
+  #heapify-up = i :
+    return when i.zero?
+    return when #< xs[parent i], xs[i]
+    xs.swap! i, parent i
+    heapify-up parent i
+
+  #promote-child-of = i :
+    return when left(i) >= xs.size
+    lv = xs[left i]
+    rv = xs[right i]
+    ni = #<(lv, rv).? lv, rv
+    xs[i] = xs[ni]
+    promote-child-of ni

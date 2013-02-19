@@ -1,0 +1,46 @@
+Rho standard library: strict collection methods
+Copyright (C) 2013, Spencer Tipping; all rights reserved
+Licensed under the terms of the MIT source code license.
+
+TODO: Think about ways to leverage enumerator composition. Representing
+sequences as delayed computations may be valuable here.
+
+strict-collection = object.subclass:
+  require-base-not-to-be :lazy?
+
+  def.empty?: call/cc cc : (each: #cc nil; self)
+
+  def.every? f : call/cc cc : (each x : #cc nil unless f x;     self)
+  def.any?   f : call/cc cc : (each x : #cc y   when   y = f x; nil)
+
+  def.first: call/cc cc : (each x : cc x; nil)
+
+  def.map     f : [].tap r : each x : r << f x
+  def.flatmap f : [].tap r : each x : f(x).each y : r << y
+  def.filter  f : [].tap r : each x : r << x when f x
+
+  def.contains? x : call/cc cc : (each y : #cc self when x == y; nil)
+
+  def.reduce     into, with : (each x : into = #with into, x; into)
+  def.reductions into, with : [].tap r : each x : r << into = #with into, x
+
+  def.index-by f : {}.tap r : each x : r[f x] = x
+  def.group-by f : {}.tap r : each x : (r[f x] ||= []) << x
+
+  def.detect f : call/cc cc : (each x : #cc x when f x; nil)
+
+  def.partition f : [[], []].tap r : each x : f(x) ? (r.first, r.second) << x
+
+  def.uniq-by f : seen = #[]
+                  [].tap r : each x : fx = f x
+                                      r << x unless #seen fx
+                                      seen << fx
+
+  def.top-of < : 
+
+  def.take-until f : [].tap r : call/cc cc : each x : (cc(nil) when f x; r << x)
+  def.drop-until f : taking = nil
+                     [].tap r : each x : (taking ||= f x; r << x)
+
+  TODO: Is there some kind of system underlying take-until, take-while,
+  take-if, take-unless, etc? Do the drop-X variants imply laziness?

@@ -1,0 +1,8 @@
+Rho standard library: stateful latches
+Copyright (C) 2013, Spencer Tipping; all rights reserved
+Licensed under the terms of the MIT source code license.
+
+require 'rho/stateful'
+
+latch = object.subclass:
+  state.latched: nil

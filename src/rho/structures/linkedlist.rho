@@ -1,0 +1,21 @@
+Rho standard library: linked list data structure
+Copyright (C) 2013, Spencer Tipping; all rights reserved
+Licensed under the terms of the MIT source code license.
+
+require 'rho/structures/struct'
+
+linkedlist = object.subclass:
+  node = struct(:data, :next)
+
+  intrinsic.lazy?: nil
+
+  state.head -readable: nil
+  derivative.tail: head.next
+
+  def.<< x : self.head = node.new(x, head)
+  def.pop:   head.tap: self.head = head.next
+
+  def.each f, start = head :
+    return when start.nil?
+    #f start.data
+    recur f, start.next

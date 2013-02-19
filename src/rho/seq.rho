@@ -1,0 +1,27 @@
+Rho standard library: internally-polymorphic sequences
+Copyright (C) 2013, Spencer Tipping; all rights reserved
+Licensed under the terms of the MIT source code license.
+
+require 'rho/structures/array'
+require 'rho/structures/avltree'
+require 'rho/structures/linkedlist'
+
+require 'rho/stateful'
+
+seq = object.subclass:
+  become stateful
+  count-messages -random-get       :[]
+                 -random-set       :[]=
+                 -random-insertion :insert
+                 -random-deletion  :delete
+                 -push :<<  -shift   :shift
+                 -pop  :pop -unshift :|<
+
+  state.backing-seq: nil
+  proxy-missing-messages: backing-seq
+
+  intrinsic.lazy? nil
+
+  transition.strategy: self.backing-seq = strategy.new backing-seq
+  derivative.strategy:
+    # TODO
