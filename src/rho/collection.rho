@@ -2,11 +2,17 @@ Rho standard library: strict collection methods
 Copyright (C) 2013, Spencer Tipping; all rights reserved
 Licensed under the terms of the MIT source code license.
 
-TODO: Think about ways to leverage enumerator composition. Representing
-sequences as delayed computations may be valuable here.
+Rho collections are represented by objects that provide an "each" method, and
+all methods involve transforming the values provided by this method. This means
+that operations like map, flatmap, etc, are both lazy and non-consing; all
+memory that would normally be allocated (e.g. a backing array) must be
+explicitly requested by using a collection-buffering strategy of some sort.
 
-strict-collection = behavior:
-  require-base-not-to-be :lazy?
+require 'rho/iterator'
+
+TODO: convert this class to non-consing (so no more [].tap stuff).
+collection = behavior:
+  #result = f : iterator.new.tap: f
 
   def.empty?: call/cc cc : (each: #cc nil; self)
 
@@ -17,14 +23,14 @@ strict-collection = behavior:
   def.rest:  got-first = nil
              [].tap r : each x : r << x when got-first == (got-first ||= self)
 
-  def.map     f : [].tap r : each x : r << f x
-  def.flatmap f : [].tap r : each x : f(x).each y : r << y
-  def.filter  f : [].tap r : each x : r << x when f x
+  def.map     f : result r : each x : r << f x
+  def.flatmap f : result r : each x : f(x).each y : r << y
+  def.filter  f : result r : each x : r << x when f x
 
   def.contains? x : call/cc cc : (each y : #cc self when x == y; nil)
 
   def.reduce     into, with : (each x : into = #with into, x; into)
-  def.reductions into, with : [].tap r : each x : r << into = #with into, x
+  def.reductions into, with : result r : each x : r << into = #with into, x
 
   def.fold with : rest.reduce first, with
 
@@ -33,21 +39,22 @@ strict-collection = behavior:
 
   def.detect f : call/cc cc : (each x : #cc x when f x; nil)
 
-  def.partition f : [[], []].tap r : each x : f(x) ? (r.first, r.second) << x
+  def.partition f : [iterator.new, iterator.new].tap r :
+                      each x : f(x) ? (r.first, r.second) << x
 
   def.uniq-by f : seen = #[]
-                  [].tap r : each x : fx = f x
+                  result r : each x : fx = f x
                                       r << x unless #seen fx
                                       seen << fx
 
   def.top-of < : fold best, x : #<(x, best).?(x, best)
 
-  def.take-until f : [].tap r : call/cc cc : each x : (cc(nil) when f x; r << x)
+  def.take-until f : result r : call/cc cc : each x : (cc(nil) when f x; r << x)
   def.drop-until f : taking = nil
-                     [].tap r : each x : (taking ||= f x; r << x)
+                     result r : each x : (taking ||= f x; r << x)
 
   TODO: Is there some kind of system underlying take-until, take-while,
   take-if, take-unless, etc? Do the drop-X variants imply laziness?
 
-  def.+ xs : [].tap r : (each r.&<<; xs.each r.&<<)
+  def.+ xs : result r : (each r.&<<; xs.each r.&<<)
   def.- xs : filter xs.uniq.complement

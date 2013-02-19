@@ -8,7 +8,6 @@ require 'rho/structures/array'
 heap = data-structure:
   config.<
   invariant.xs: array.new
-  intrinsic.lazy? nil
 
   def.<< x : heapify-up (xs << x).size - 1
 

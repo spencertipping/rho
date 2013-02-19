@@ -2,4 +2,6 @@ Rho standard library: data structure base definitions
 Copyright (C) 2013, Spencer Tipping; all rights reserved
 Licensed under the terms of the MIT source code license.
 
-#data-structure = object.&subclass
+#data-structure = body : object.subclass:
+  intrinsic.lazy? nil
+  body.call-within frame

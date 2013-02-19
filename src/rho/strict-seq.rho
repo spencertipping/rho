@@ -11,20 +11,30 @@ require 'rho/stateful'
 strict-seq = object.subclass:
   is stateful
 
-  TODO: think about whether it makes sense to categorize methods here. This
-  seems like something we should define in a behavior somewhere...
-  count-messages -random-get       :[]
-                 -random-set       :[]=
-                 -random-insertion :insert
-                 -random-deletion  :delete
-                 -push :<<  -shift   :shift
-                 -pop  :pop -unshift :|<
-
-  state.backing-seq: nil
-  proxy-missing-messages: backing-seq
-
   intrinsic.lazy? nil
 
-  transition.strategy: self.backing-seq = strategy.new backing-seq
-  derivative.strategy:
-    # TODO
+  TODO: think about whether it makes sense to categorize methods here. This
+  seems like something we should define in a behavior somewhere...
+
+  TODO: also think about whether the router should handle counting to begin
+  with, and whether counting is sufficient. We also need to look at average,
+  variance, and over-time trends; many collections are insert-heavy at first
+  and read-heavy later, for instance.
+
+  TODO: also think about whether we want complexity-estimate metadata per
+  method per implementation. Maybe we do a data-type switch when the next
+  operation's complexity is >= the switch complexity or something.
+
+  route.count-messages -random-get       :[]
+                       -random-set       :[]=
+                       -random-insertion :insert
+                       -random-deletion  :delete
+                       -push :<<  -shift   :shift
+                       -pop  :pop -unshift :|<
+
+  state.backing-seq: nil
+  route.missing-messages-to: backing-seq
+
+  edge.strategy: self.backing-seq = strategy.new backing-seq
+  seq.strategy:
+    TODO: much later on, write the real logic here

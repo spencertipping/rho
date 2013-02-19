@@ -23,8 +23,8 @@ syn region  rhoString           matchgroup=rhoStringDelimiter start=/\z(["']\)/ 
 syn region  rhoEscape           matchgroup=rhoStringDelimiter start=/#{/ end=/}/ contains=TOP contained
 
 syn keyword rhoKernel           require include inherit rebind
-syn keyword rhoDynamicScope     return become become! do raise call/cc nil self recur
-syn keyword rhoOOP              class subclass behavior is
+syn keyword rhoDynamicScope     return become! do raise call/cc nil self recur frame
+syn keyword rhoOOP              class subclass behavior is route
 
 syn keyword rhoModifier         when unless while until for where rescue
 
@@ -42,8 +42,8 @@ syn match   rhoFormal           /\k\+\s*/ contained
 syn match   rhoFormalSeparator  /:/       contained
 syn match   rhoBlockStart       /\(\<\k\+\|,\s*\k\+\|\s*=\s*\S\+\)\+\s\+:\(\s\|$\)/ contains=rhoFormal,rhoFormalSeparator
 
-syn match   rhoDefMethod        /\.\(def\|state\|transition\|derivative\|config\|invariant\|intrinsic\)\./ nextgroup=rhoMethodName
-syn match   rhoDefinition       /\<\(def\|state\|transition\|derivative\|config\|invariant\|intrinsic\)\./ nextgroup=rhoMethodName
+syn match   rhoDefMethod        /\.\(def\|state\|edge\|seq\|config\|invariant\|intrinsic\)\./ nextgroup=rhoMethodName
+syn match   rhoDefinition       /\<\(def\|state\|edge\|seq\|config\|invariant\|intrinsic\)\./ nextgroup=rhoMethodName
 syn match   rhoLHS              /\k\+/ contained
 syn match   rhoMethodName       /\k\+/ contained
 syn match   rhoMethodName       /#\k\+/

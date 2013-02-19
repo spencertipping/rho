@@ -8,8 +8,6 @@ require 'rho/structures/struct'
 linkedlist = data-structure:
   node = struct(:data, :next)
 
-  intrinsic.lazy? nil
-
   state.head: nil
   derivative.tail: head.next
   derivative.head: head

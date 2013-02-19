@@ -6,6 +6,16 @@ require 'rho/structures/base'
 require 'rho/structures/struct'
 
 avltree = data-structure:
-  intrinsic.lazy? nil
-  node-struct = struct(:l, :r, :p, :balance).tap:
-    # TODO
+  is binary-tree-node
+  is container-for-data
+
+  invariant.data
+
+  state.left
+  state.right
+  state.parent
+
+  seq.left-height:  left.maybe  :height -otherwise 0
+  seq.right-height: right.maybe :height -otherwise 0
+  seq.height:       [left-height, right-height].max
+  seq.balance:      left-height - right-height
