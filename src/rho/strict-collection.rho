@@ -5,7 +5,7 @@ Licensed under the terms of the MIT source code license.
 TODO: Think about ways to leverage enumerator composition. Representing
 sequences as delayed computations may be valuable here.
 
-strict-collection = object.subclass:
+strict-collection = behavior:
   require-base-not-to-be :lazy?
 
   def.empty?: call/cc cc : (each: #cc nil; self)
@@ -14,6 +14,8 @@ strict-collection = object.subclass:
   def.any?   f : call/cc cc : (each x : #cc y   when   y = f x; nil)
 
   def.first: call/cc cc : (each x : cc x; nil)
+  def.rest:  got-first = nil
+             [].tap r : each x : r << x when got-first == (got-first ||= self)
 
   def.map     f : [].tap r : each x : r << f x
   def.flatmap f : [].tap r : each x : f(x).each y : r << y
@@ -23,6 +25,8 @@ strict-collection = object.subclass:
 
   def.reduce     into, with : (each x : into = #with into, x; into)
   def.reductions into, with : [].tap r : each x : r << into = #with into, x
+
+  def.fold with : rest.reduce first, with
 
   def.index-by f : {}.tap r : each x : r[f x] = x
   def.group-by f : {}.tap r : each x : (r[f x] ||= []) << x
@@ -36,7 +40,7 @@ strict-collection = object.subclass:
                                       r << x unless #seen fx
                                       seen << fx
 
-  def.top-of < : 
+  def.top-of < : fold best, x : #<(x, best).?(x, best)
 
   def.take-until f : [].tap r : call/cc cc : each x : (cc(nil) when f x; r << x)
   def.drop-until f : taking = nil
@@ -44,3 +48,6 @@ strict-collection = object.subclass:
 
   TODO: Is there some kind of system underlying take-until, take-while,
   take-if, take-unless, etc? Do the drop-X variants imply laziness?
+
+  def.+ xs : [].tap r : (each r.&<<; xs.each r.&<<)
+  def.- xs : filter xs.uniq.complement

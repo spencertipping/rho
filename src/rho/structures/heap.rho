@@ -2,9 +2,10 @@ Rho standard library: min/max heap data structure
 Copyright (C) 2013, Spencer Tipping; all rights reserved
 Licensed under the terms of the MIT source code license.
 
+require 'rho/structures/base'
 require 'rho/structures/array'
 
-heap = object.subclass:
+heap = data-structure:
   config.<
   invariant.xs: array.new
   intrinsic.lazy? nil
@@ -27,8 +28,5 @@ heap = object.subclass:
 
   #promote-child-of = i :
     return when left(i) >= xs.size
-    lv = xs[left i]
-    rv = xs[right i]
-    ni = #<(lv, rv).? lv, rv
-    xs[i] = xs[ni]
+    xs[i] = xs[ni = #<(lv = xs[left i], rv = xs[right i]).? lv, rv]
     promote-child-of ni

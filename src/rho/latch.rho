@@ -5,4 +5,11 @@ Licensed under the terms of the MIT source code license.
 require 'rho/stateful'
 
 latch = object.subclass:
-  state.latched: nil
+  config.initially: nil
+  state.latched: initially
+
+  def.change! state : latched.tap: self.latched = state
+
+  def.latch!:   change! self
+  def.unlatch!: change! nil
+  def.toggle!:  change! latched.?(nil, self)

@@ -2,16 +2,21 @@ Rho standard library: linked list data structure
 Copyright (C) 2013, Spencer Tipping; all rights reserved
 Licensed under the terms of the MIT source code license.
 
+require 'rho/structures/base'
 require 'rho/structures/struct'
 
-linkedlist = object.subclass:
+linkedlist = data-structure:
   node = struct(:data, :next)
 
-  intrinsic.lazy?: nil
+  intrinsic.lazy? nil
 
-  state.head -readable: nil
+  state.head: nil
   derivative.tail: head.next
+  derivative.head: head
 
+  These methods are a little deceptive; they operate on the head of the list,
+  not the tail as you might expect from the names. They're named this way to be
+  consistent with other sequence mutators.
   def.<< x : self.head = node.new(x, head)
   def.pop:   head.tap: self.head = head.next
 

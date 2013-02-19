@@ -1,4 +1,4 @@
-Rho standard library: internally-polymorphic sequences
+Rho standard library: internally-polymorphic strict sequences
 Copyright (C) 2013, Spencer Tipping; all rights reserved
 Licensed under the terms of the MIT source code license.
 
@@ -8,8 +8,11 @@ require 'rho/structures/linkedlist'
 
 require 'rho/stateful'
 
-seq = object.subclass:
-  become stateful
+strict-seq = object.subclass:
+  is stateful
+
+  TODO: think about whether it makes sense to categorize methods here. This
+  seems like something we should define in a behavior somewhere...
   count-messages -random-get       :[]
                  -random-set       :[]=
                  -random-insertion :insert

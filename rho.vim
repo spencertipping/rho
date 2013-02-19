@@ -24,9 +24,9 @@ syn region  rhoEscape           matchgroup=rhoStringDelimiter start=/#{/ end=/}/
 
 syn keyword rhoKernel           require include inherit rebind
 syn keyword rhoDynamicScope     return become become! do raise call/cc nil self recur
-syn keyword rhoOOP              class subclass
+syn keyword rhoOOP              class subclass behavior is
 
-syn keyword rhoModifier         when unless while until for and where rescue
+syn keyword rhoModifier         when unless while until for where rescue
 
 syn region  rhoRegexpSyntax     matchgroup=rhoRegexpDelimiter start=/\/\S\@=/ end=/\/\w*/ skip=/\\./ contained
 syn region  rhoRegexpGroup      matchgroup=rhoRegexpDelimiter start=/(/ end=/)/ skip=/\\./ contained

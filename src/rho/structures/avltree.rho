@@ -2,11 +2,10 @@ Rho standard library: AVL tree implementation
 Copyright (C) 2013, Spencer Tipping; all rights reserved
 Licensed under the terms of the MIT source code license.
 
+require 'rho/structures/base'
 require 'rho/structures/struct'
 
-avltree = object.subclass:
+avltree = data-structure:
   intrinsic.lazy? nil
   node-struct = struct(:l, :r, :p, :balance).tap:
-    
-
-  def.cons l, r : node-struct.new l, r, nil
+    # TODO
