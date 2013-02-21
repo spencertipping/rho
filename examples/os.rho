@@ -8,7 +8,7 @@ Execute commands and grab stdout of the resulting pipeline. No data is read
 from the pipe until we force it with a message like each-line.
 first-field = $: temp = mktemp rho-shell-example.XXXXXX
                  ls $HOME > $temp
-                 sort temp | cut -f 1
+                 sort $temp | cut -f 1
 
 Set up a consumer shell process.
 consumer = $: gzip > 'result.gz'
