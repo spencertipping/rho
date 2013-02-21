@@ -9,8 +9,8 @@ linkedlist = data-structure:
   node = struct(:data, :next)
 
   state.head: nil
-  derivative.tail: head.next
-  derivative.head: head
+  seq.tail: head.next
+  seq.head: head
 
   These methods are a little deceptive; they operate on the head of the list,
   not the tail as you might expect from the names. They're named this way to be

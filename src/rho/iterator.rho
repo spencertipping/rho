@@ -4,8 +4,10 @@ Licensed under the terms of the MIT source code license.
 
 TODO: maybe convert this into a more general broadcaster object.
 
+require 'rho/ref'
+
 iterator = object.subclass:
   invariant.listeners: []
 
-  def.each f : tap: listeners << f
+  def.each f : tap: listeners << weakref.to f
   def.<<   x : tap: listeners.each l : #l x
