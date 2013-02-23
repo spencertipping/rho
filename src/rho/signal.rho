@@ -1,0 +1,18 @@
+Rho standard library: broadcasting signals
+Copyright (C) 2013, Spencer Tipping; all rights reserved
+Licensed under the terms of the MIT source code license.
+
+require 'rho/ref'
+
+You can use a signal analogously to a lazy collection; the two present the same
+interface. The idea is that values will be broadcast to each function you
+specify using 'each'. You can stop receiving values by calling 'uneach'.
+
+TODO: Does 'uneach' generalize to an escaping continuation for strict
+sequences?
+
+signal = object.subclass:
+  invariant.listeners: []
+  def.each   f : tap: listeners << weakref.to f
+  def.uneach f : tap: listeners.remove! x : f == x
+  def.<<     x : tap: listeners.each l : #l x
